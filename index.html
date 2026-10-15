@@ -1,44 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Currency Converter</title>
+    <meta name="description" content="ValutaFlow — Real-time smart currency converter with live exchange rates, instant calculation, and over 150+ global currencies.">
+    <title>ValutaFlow — Smart Currency Converter & Live Exchange Rates</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
-    <div class="container">
-        <h2>Currency Converter</h2>
-        <form>
-            <div class="amount">
-                <p>Enter Amount</p>
-                <input value = "100" type="text">
-            </div>
-            <div class="dropdown">
-                <div class="from">
-                    <p>From</p>
-                    <div class="select-container">
-                        <img src="https://flagsapi.com/US/flat/64.png" alt="#">
-                        <select name="from">
-                        </select>
+    <!-- Ambient Background Glows -->
+    <div class="ambient-glow glow-top"></div>
+    <div class="ambient-glow glow-bottom"></div>
+
+    <!-- Main App Wrapper -->
+    <div class="app-layout">
+        <!-- Top Navigation / Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">Valuta<span>Flow</span></span>
+                        <span class="brand-tag">PRO</span>
                     </div>
                 </div>
-                <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                <div class="to">
-                    <p>To</p>
-                    <div class="select-container">
-                        <img src="https://flagsapi.com/IN/flat/64.png" alt="#">
-                        <select name="to">
-                        </select>
+
+                <div class="header-right">
+                    <div class="live-pill" id="liveStatus">
+                        <span class="pulse-dot"></span>
+                        <span class="live-text">Live Rates</span>
+                    </div>
+
+                    <button type="button" id="themeToggle" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+                        <i class="fa-solid fa-sun light-icon"></i>
+                        <i class="fa-solid fa-moon dark-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Converter Card -->
+        <main class="converter-wrapper">
+            <div class="converter-card">
+                <!-- Card Header -->
+                <div class="card-header">
+                    <div class="header-badge">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Instant Conversion</span>
+                    </div>
+                    <h1 class="card-title">Currency Converter</h1>
+                    <p class="card-subtitle">Accurate real-time international exchange rates at your fingertips.</p>
+                </div>
+
+                <!-- Converter Form -->
+                <form id="converterForm" class="converter-form" novalidate>
+                    <!-- Amount Section -->
+                    <div class="form-group amount-group">
+                        <div class="label-row">
+                            <label for="amountInput">Enter Amount</label>
+                            <span class="helper-text">Base Currency Value</span>
+                        </div>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol" id="currencySymbol">$</span>
+                            <input 
+                                id="amountInput" 
+                                type="number" 
+                                inputmode="decimal" 
+                                step="any" 
+                                min="0.01" 
+                                value="100" 
+                                placeholder="0.00" 
+                                required
+                                autocomplete="off"
+                            >
+                            <button type="button" id="clearAmount" class="clear-input-btn" title="Clear amount" aria-label="Clear amount">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Quick Amount Presets -->
+                        <div class="quick-amounts" aria-label="Quick amount selection">
+                            <span class="presets-label">Quick:</span>
+                            <button type="button" class="amount-pill" data-amount="10">10</button>
+                            <button type="button" class="amount-pill" data-amount="50">50</button>
+                            <button type="button" class="amount-pill active" data-amount="100">100</button>
+                            <button type="button" class="amount-pill" data-amount="500">500</button>
+                            <button type="button" class="amount-pill" data-amount="1000">1,000</button>
+                            <button type="button" class="amount-pill" data-amount="5000">5,000</button>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown Currency Selector Row -->
+                    <div class="dropdown-row">
+                        <!-- From Currency Card -->
+                        <div class="currency-box from">
+                            <span class="currency-box-label">From</span>
+                            <div class="select-container">
+                                <div class="flag-wrapper">
+                                    <img class="flag-img" src="https://flagsapi.com/US/flat/64.png" alt="US flag" loading="lazy">
+                                </div>
+                                <div class="select-info">
+                                    <select name="from" id="fromSelect" aria-label="From Currency">
+                                        <!-- Options populated via JS -->
+                                    </select>
+                                    <span class="currency-fullname" id="fromFullName">United States Dollar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Swap Button -->
+                        <div class="swap-action">
+                            <button type="button" id="swapBtn" class="swap-btn" title="Swap currencies (Press 'S')" aria-label="Swap currencies">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            </button>
+                        </div>
+
+                        <!-- To Currency Card -->
+                        <div class="currency-box to">
+                            <span class="currency-box-label">To</span>
+                            <div class="select-container">
+                                <div class="flag-wrapper">
+                                    <img class="flag-img" src="https://flagsapi.com/IN/flat/64.png" alt="IN flag" loading="lazy">
+                                </div>
+                                <div class="select-info">
+                                    <select name="to" id="toSelect" aria-label="To Currency">
+                                        <!-- Options populated via JS -->
+                                    </select>
+                                    <span class="currency-fullname" id="toFullName">Indian Rupee</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Submit Button -->
+                    <button type="submit" id="submitBtn" class="convert-submit-btn">
+                        <span class="btn-spinner"></span>
+                        <span class="btn-text">
+                            <span>Get Live Rate</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                        <kbd class="btn-shortcut">↵</kbd>
+                    </button>
+                </form>
+
+                <!-- Result Card Section -->
+                <div class="result-card" id="resultCard">
+                    <div class="result-top">
+                        <div class="conversion-summary">
+                            <span class="source-amount-text" id="sourceAmountText">100 USD =</span>
+                            <div class="converted-amount-wrapper">
+                                <span class="converted-amount" id="convertedAmount">--</span>
+                                <span class="target-currency-code" id="targetCurrencyCode">INR</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="copyBtn" class="copy-result-btn" title="Copy result to clipboard" aria-label="Copy result">
+                            <i class="fa-regular fa-copy"></i>
+                            <span class="copy-text">Copy</span>
+                        </button>
+                    </div>
+
+                    <div class="rates-breakdown">
+                        <div class="rate-item primary-rate">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span id="rateMsg">1 USD = 95.25 INR</span>
+                        </div>
+                        <div class="rate-divider"></div>
+                        <div class="rate-item inverse-rate">
+                            <i class="fa-solid fa-repeat"></i>
+                            <span id="inverseRateMsg">1 INR = 0.0105 USD</span>
+                        </div>
+                    </div>
+
+                    <div class="result-footer">
+                        <div class="update-time">
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="lastUpdated">Updated: Loading...</span>
+                        </div>
+                        <div class="api-status">
+                            <i class="fa-solid fa-shield-check"></i>
+                            <span>Mid-market rate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Banner (Hidden by default) -->
+                <div class="error-banner" id="errorBanner" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div class="error-content">
+                        <span class="error-title">Conversion Failed</span>
+                        <p class="error-desc" id="errorMessage">Unable to fetch live rates. Please try again.</p>
+                    </div>
+                    <button type="button" id="retryBtn" class="retry-btn">Retry</button>
+                </div>
+
+                <!-- Popular Currency Pairs -->
+                <div class="popular-pairs-section">
+                    <span class="popular-title">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                        <span>Popular Pairs:</span>
+                    </span>
+                    <div class="pair-chips">
+                        <button type="button" class="pair-chip" data-from="USD" data-to="EUR">USD / EUR</button>
+                        <button type="button" class="pair-chip active-pair" data-from="USD" data-to="INR">USD / INR</button>
+                        <button type="button" class="pair-chip" data-from="EUR" data-to="GBP">EUR / GBP</button>
+                        <button type="button" class="pair-chip" data-from="USD" data-to="JPY">USD / JPY</button>
+                        <button type="button" class="pair-chip" data-from="GBP" data-to="USD">GBP / USD</button>
+                        <button type="button" class="pair-chip" data-from="USD" data-to="AED">USD / AED</button>
+                        <button type="button" class="pair-chip" data-from="USD" data-to="CAD">USD / CAD</button>
                     </div>
                 </div>
             </div>
-            <div class="msg">1USD = 95INR</div>
-            <button>Get Exchange Rate</button>
-        </form>
+        </main>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-container">
+                <p>© 2026 ValutaFlow • Live financial exchange data powered by ExchangeRate-API.</p>
+                <div class="footer-shortcuts">
+                    <span><kbd>↵</kbd> Convert</span>
+                    <span><kbd>S</kbd> Swap</span>
+                </div>
+            </div>
+        </footer>
     </div>
-<script src="codes.js"></script>
-<script src="app.js"></script>
+
+    <!-- Scripts -->
+    <script src="codes.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
